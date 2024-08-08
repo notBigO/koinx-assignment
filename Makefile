@@ -6,7 +6,7 @@ BUILD_CONTEXT=.
 DOCKER_USERNAME=varunpanyam
 DOCKER_REPO=koinx_backend
 
-all: build push run
+all: build run
 
 build:
 	@echo "Building docker image..."
