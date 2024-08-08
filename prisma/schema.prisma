@@ -9,6 +9,16 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model Trade {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    BigInt
+  utcTime   DateTime @map("UTC_Time")
+  operation String
+  market    String
+  baseCoin  String
+  quoteCoin String
 }
