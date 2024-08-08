@@ -8,7 +8,7 @@ export const isCSV = (req: Request, res: Response, next: NextFunction) => {
   // check for upload existence
   upload.single("file")(req, res, (err: any) => {
     if (err) {
-      return res.sendStatus(400).json({ error: "File upload error" });
+      return res.status(400).json({ error: "File upload error" });
     }
 
     // check for invalid file type or non existent file
@@ -17,7 +17,7 @@ export const isCSV = (req: Request, res: Response, next: NextFunction) => {
       path.extname(req.file.originalname).toLowerCase() !== ".csv"
     ) {
       return res
-        .sendStatus(400)
+        .status(400)
         .json({ error: "File not found or invalid file format (.csv only)" });
     }
 

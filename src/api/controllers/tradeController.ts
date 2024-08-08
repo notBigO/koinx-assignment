@@ -1,8 +1,8 @@
-import { parseCSV } from "@/utils/csvParser";
+import { parseCSV } from "../../utils/csvParser";
 import { Request, Response } from "express";
 import multer from "multer";
 import fs from "fs";
-import { db } from "@/common/db";
+import { db } from "../../common/db";
 
 const upload = multer({ dest: "uploads/" });
 
@@ -10,7 +10,7 @@ export const uploadCSV = async (req: Request, res: Response) => {
   // check for file existence
   const file = req.file;
   if (!file) {
-    return res.sendStatus(400).json({ error: "No file uploaded" });
+    return res.status(400).json({ error: "No file uploaded" });
   }
 
   // parse and post csv data to db
@@ -37,9 +37,7 @@ export const uploadCSV = async (req: Request, res: Response) => {
     });
 
     if (existingTrades.length > 0) {
-      return res
-        .sendStatus(409)
-        .json({ error: "Duplicate trades already exist" });
+      return res.status(409).json({ error: "Duplicate trades already exist" });
     }
 
     const createdTrades = await db.trade.createMany({
@@ -50,13 +48,13 @@ export const uploadCSV = async (req: Request, res: Response) => {
       fs.unlinkSync(file.path);
     }
 
-    return res.sendStatus(200).json({ data });
+    return res.status(200).json({ data });
   } catch (error) {
     if (file && fs.existsSync(file.path)) {
       fs.unlinkSync(file.path);
     }
 
-    return res.sendStatus(500).json({ error: "Error processing CSV file" });
+    return res.status(500).json({ error: "Error processing CSV file" });
   }
 };
 
@@ -64,14 +62,14 @@ export const getBalance = async (req: Request, res: Response) => {
   const { timestamp } = req.body;
 
   if (timestamp === undefined) {
-    return res.sendStatus(400).json({ error: "Missing timestamp" });
+    return res.status(400).json({ error: "Missing timestamp" });
   }
 
   try {
     const date = new Date(timestamp);
 
     if (isNaN(date.getTime())) {
-      return res.sendStatus(400).json({ error: "Invalid timestamp format" });
+      return res.status(400).json({ error: "Invalid timestamp format" });
     }
 
     const trades = await db.trade.findMany({
@@ -100,6 +98,6 @@ export const getBalance = async (req: Request, res: Response) => {
 
     return res.json({ balances });
   } catch (error) {
-    res.sendStatus(400).json({ error });
+    res.status(400).json({ error });
   }
 };
