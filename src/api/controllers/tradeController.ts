@@ -24,6 +24,18 @@ export const uploadCSV = async (req: Request, res: Response) => {
       quoteCoin: trade.quoteCoin,
     }));
 
+    const existingTrades = await db.trade.findMany({
+      where: {
+        OR: dbData.map((trade) => ({
+          userId: trade.userId,
+          utcTime: trade.utcTime,
+        })),
+      },
+    });
+
+    if (existingTrades.length > 0) {
+      return res.status(409).json({ error: "Duplicate trades already exist" });
+    }
     const createdTrades = await db.trade.createMany({
       data: dbData,
     });
