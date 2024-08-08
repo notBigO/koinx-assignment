@@ -41,3 +41,40 @@ export const uploadCSV = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Error processing CSV file" });
   }
 };
+
+export const getBalance = async (req: Request, res: Response) => {
+  const { timestamp } = req.body;
+
+  if (timestamp === undefined) {
+    return res.sendStatus(400).json({ error: "Missing timestamp" });
+  }
+
+  try {
+    const date = new Date(timestamp);
+
+    const trades = await db.trade.findMany({
+      where: {
+        utcTime: {
+          lt: date,
+        },
+      },
+    });
+
+    const balances: Record<string, number> = {};
+    trades.forEach((trade) => {
+      const [baseCoin, quoteCoin] = trade.market.split("/");
+
+      if (!balances[baseCoin]) {
+        balances[baseCoin] = 0;
+      }
+
+      if (trade.operation === "Buy") {
+        balances[baseCoin] += parseInt(trade.baseCoin);
+      } else if (trade.operation === "Sell") {
+        balances[baseCoin] -= parseInt(trade.baseCoin);
+      }
+    });
+
+    return res.json({ balances });
+  } catch (error) {}
+};
