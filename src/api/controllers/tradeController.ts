@@ -52,6 +52,10 @@ export const getBalance = async (req: Request, res: Response) => {
   try {
     const date = new Date(timestamp);
 
+    if (isNaN(date.getTime())) {
+      return res.status(400).json({ error: "Invalid timestamp format" });
+    }
+
     const trades = await db.trade.findMany({
       where: {
         utcTime: {
@@ -62,7 +66,7 @@ export const getBalance = async (req: Request, res: Response) => {
 
     const balances: Record<string, number> = {};
     trades.forEach((trade) => {
-      const [baseCoin, quoteCoin] = trade.market.split("/");
+      const [baseCoin] = trade.market.split("/");
 
       if (!balances[baseCoin]) {
         balances[baseCoin] = 0;
@@ -76,5 +80,7 @@ export const getBalance = async (req: Request, res: Response) => {
     });
 
     return res.json({ balances });
-  } catch (error) {}
+  } catch (error) {
+    res.sendStatus(400).json({ error });
+  }
 };
