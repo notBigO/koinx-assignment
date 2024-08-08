@@ -7,11 +7,13 @@ import { db } from "@/common/db";
 const upload = multer({ dest: "uploads/" });
 
 export const uploadCSV = async (req: Request, res: Response) => {
+  // check for file existence
   const file = req.file;
   if (!file) {
-    return res.status(400).json({ error: "No file uploaded" });
+    return res.sendStatus(400).json({ error: "No file uploaded" });
   }
 
+  // parse and post csv data to db
   try {
     const data: TradeInput[] = await parseCSV(file.path);
 
@@ -24,6 +26,7 @@ export const uploadCSV = async (req: Request, res: Response) => {
       quoteCoin: trade.quoteCoin,
     }));
 
+    // check for duplicate entries
     const existingTrades = await db.trade.findMany({
       where: {
         OR: dbData.map((trade) => ({
@@ -34,8 +37,11 @@ export const uploadCSV = async (req: Request, res: Response) => {
     });
 
     if (existingTrades.length > 0) {
-      return res.status(409).json({ error: "Duplicate trades already exist" });
+      return res
+        .sendStatus(409)
+        .json({ error: "Duplicate trades already exist" });
     }
+
     const createdTrades = await db.trade.createMany({
       data: dbData,
     });
@@ -44,13 +50,13 @@ export const uploadCSV = async (req: Request, res: Response) => {
       fs.unlinkSync(file.path);
     }
 
-    return res.status(200).json({ data });
+    return res.sendStatus(200).json({ data });
   } catch (error) {
     if (file && fs.existsSync(file.path)) {
       fs.unlinkSync(file.path);
     }
 
-    return res.status(500).json({ error: "Error processing CSV file" });
+    return res.sendStatus(500).json({ error: "Error processing CSV file" });
   }
 };
 
@@ -65,7 +71,7 @@ export const getBalance = async (req: Request, res: Response) => {
     const date = new Date(timestamp);
 
     if (isNaN(date.getTime())) {
-      return res.status(400).json({ error: "Invalid timestamp format" });
+      return res.sendStatus(400).json({ error: "Invalid timestamp format" });
     }
 
     const trades = await db.trade.findMany({
@@ -76,6 +82,7 @@ export const getBalance = async (req: Request, res: Response) => {
       },
     });
 
+    // hash map to store key value of "market":baseCoin
     const balances: Record<string, number> = {};
     trades.forEach((trade) => {
       const [baseCoin] = trade.market.split("/");
