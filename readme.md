@@ -36,7 +36,7 @@ This project is a Node.js backend application designed to handle trade data. It 
 
 - **URL:** `http://13.201.56.56/`
 - **Method:** `GET`
-- **Description:** This endpoint checks the health of the application. Replace `http://13.201.56.56/` with the public IP address of your EC2 instance. You should receive a simple response indicating that the server is running correctly.
+- **Description:** This endpoint checks the health of the application. You should receive a simple response indicating that the server is running correctly.
 
 - Sample Request
 
