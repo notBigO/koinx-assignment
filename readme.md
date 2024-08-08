@@ -36,7 +36,7 @@ This project is a Node.js backend application designed to handle trade data. It 
 
 - **URL:** `http://13.201.56.56/`
 - **Method:** `GET`
-- **Description:** This endpoint checks the health of the application. Replace `<EC2_PUBLIC_IP>` with the public IP address of your EC2 instance. You should receive a simple response indicating that the server is running correctly.
+- **Description:** This endpoint checks the health of the application. Replace `http://13.201.56.56/` with the public IP address of your EC2 instance. You should receive a simple response indicating that the server is running correctly.
 
 - Sample Request
 
@@ -48,7 +48,7 @@ curl -X GET http://13.201.56.56/
 
 - **URL:** `http://13.201.56.56/api/upload`
 - **Method:** `POST`
-- **Description:** This endpoint allows you to upload a CSV file for processing. Ensure that your file upload is properly handled by the deployed server.
+- **Description:** This endpoint allows you to upload a CSV file for processing.
 
 **Steps to Test:**
 
