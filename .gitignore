@@ -25,3 +25,7 @@ uploads
 *.njsproj
 *.sln
 *.sw?
+
+infrastructure/terraform/.terraform
+infrastructure/terraform/.terraform.*
+infrastructure/terraform/terraform.*

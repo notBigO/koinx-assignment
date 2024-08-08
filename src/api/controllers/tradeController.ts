@@ -4,11 +4,10 @@ import multer from "multer";
 import fs from "fs";
 import { db } from "../../common/db";
 
-const upload = multer({ dest: "uploads/" });
-
 export const uploadCSV = async (req: Request, res: Response) => {
   // check for file existence
   const file = req.file;
+
   if (!file) {
     return res.status(400).json({ error: "No file uploaded" });
   }

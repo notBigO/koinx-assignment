@@ -1,12 +1,12 @@
-IMAGE_NAME=koinx-backend
+IMAGE_NAME=koinx_backend
 CONTAINER_NAME=koinx_backend
 PORT=3000
 DOCKERFILE_PATH=infrastructure/Dockerfile
 BUILD_CONTEXT=.
 DOCKER_USERNAME=varunpanyam
-DOCKER_REPO=koinx-backend
+DOCKER_REPO=koinx_backend
 
-all: build run
+all: build push run
 
 build:
 	@echo "Building docker image..."
